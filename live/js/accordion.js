@@ -1,18 +1,20 @@
 var Accordian = (function(options) {
 
         var _defaults = {
+			listContainer: ".accordion",
             listType: "UL",
-            container: ".accordion",
-            levels: []
+			listClass: "toggle",
+			levels: []
         };
 
+        options.listContainer = options.listContainer || _defaults.listContainer;
         options.listType = options.listType.toUpperCase() || _defaults.listType;
-        options.container = options.container || _defaults.container;
-        options.levels = options.levels || _defaults.levels;
+		options.listClass = options.listClass || _defaults.listClass;
+		options.levels = _defaults.levels;
 
 
 		var counter = 0,
-			topLevel = document.querySelectorAll(options.container + " > " + options.listType);
+			topLevel = document.querySelectorAll(options.listContainer + " > " + options.listType);
 		
 
 		//check if levels are already specified
@@ -25,6 +27,7 @@ var Accordian = (function(options) {
 				[].forEach.call(level[i].children, function(tab){
 					setClickEvent(tab);
 					
+					//add a custom class to all list items that toggle an accordion
 					for(var i = 0; i < tab.children.length; i++) {
 						if(tab.children[i].nodeName == options.listType && !tab.classList.contains(options.listClass)) 
 							tab.classList.add(options.listClass)		
@@ -50,7 +53,7 @@ var Accordian = (function(options) {
 				});
 
 				//get a list of all the currently active tabContent
-				var activeLists = document.querySelectorAll(options.container + " " + options.listType +  ".active");
+				var activeLists = document.querySelectorAll(options.listContainer + " " + options.listType +  ".active");
 				
 				//start at the bottom of the tree and work our way up
 				for(var i = activeLists.length - 1; i >= 0; i--) {
@@ -111,7 +114,7 @@ var Accordian = (function(options) {
 
 
     Accordian({
-        container: ".accordion",
+        listContainer: ".accordion",
 		listType: "ul",
 		listClass: "toggle"
     });
