@@ -24,6 +24,11 @@ var Accordian = (function(options) {
 			for(var i = 0; i < level.length; i++) {
 				[].forEach.call(level[i].children, function(tab){
 					setClickEvent(tab);
+					
+					for(var i = 0; i < tab.children.length; i++) {
+						if(tab.children[i].nodeName == options.listType && !tab.classList.contains(options.listClass)) 
+							tab.classList.add(options.listClass)		
+					}
 				});
 			}
 		});
@@ -34,36 +39,23 @@ var Accordian = (function(options) {
 
 				//cancelBubble stops multiple click events from firing
 				e.cancelBubble = true;
-				var parent = tab.parentElement;
 
 				//see if any children are a new list
 				[].forEach.call(tab.children, function(child) {
 					if(child.nodeName == options.listType) {
-						var tabContent = child;
-						tabContent.style.height = getElemChildrenHeight(tabContent);
+						child.style.height = getElemChildrenHeight(child);
 						tab.classList.toggle('active');
-						tabContent.classList.toggle('active');
+						child.classList.toggle('active');
 					}
 				});
 
+				//get a list of all the currently active tabContent
 				var activeLists = document.querySelectorAll(options.container + " " + options.listType +  ".active");
 				
+				//start at the bottom of the tree and work our way up
 				for(var i = activeLists.length - 1; i >= 0; i--) {
 					activeLists[i].style.height = getElemChildrenHeight(activeLists[i]);
 				}
-
-				// [].forEach.call(activeLists, function(list) {
-				// 	console.log(list)
-				// 	list.style.height += getElemChildrenHeight(list);	
-				// 	// console.log(list.style.height)	
-				// });
-
-				//if parent is active, can I recalculate the height of its list elements
-
-				// if(parent.classList.contains('active')) {
-				// 	console.log(parent);
-				// 	parent.style.height = getElemChildrenHeight(parent);
-				// }
 			});
 		}
 		
@@ -72,13 +64,21 @@ var Accordian = (function(options) {
 		function getElemChildrenHeight(elem) {
 			var height = 0;
 			[].forEach.call(elem.children, function(child) {
-				// console.log($(child).outerHeight())
-				var style = getComputedStyle(child),
+				//since the element height change has a transition time, we must clone the element to calculate the final height
+				var cloned = child.cloneNode(true);			
+				cloned.style.height = "auto";
+				cloned.classList.remove('active');
+				elem.append(cloned);
+
+				var style = getComputedStyle(cloned),
 					marginTop = parseInt(style.marginTop),
 					marginBottom = parseInt(style.marginBottom),
-					outerHeight = child.offsetHeight;
+					outerHeight = cloned.offsetHeight;
 
-					height += (marginTop + marginBottom + outerHeight);
+				//don't forget to remove the clone from the document
+				cloned.remove();
+
+				height += (marginTop + marginBottom + outerHeight);
 			});
 			return height + "px";
 		}
@@ -112,6 +112,6 @@ var Accordian = (function(options) {
 
     Accordian({
         container: ".accordion",
-        listType: "ul",
-        // levels: [".level_1", ".level_2", ".level_3"]
+		listType: "ul",
+		listClass: "toggle"
     });
