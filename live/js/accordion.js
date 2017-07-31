@@ -20,48 +20,41 @@ var Accordion = (function(options) {
 	options.listToggle = options.listToggle.toUpperCase();
 
 
-	var containers = document.querySelectorAll(options.listContainer),
-		accordionCounter = 0;
-
-	return [].forEach.call(containers, function(container) {
+	var containers = document.querySelectorAll(options.listContainer);
 
 	var counter = 0,
-		topLevel = document.querySelectorAll(options.listContainer + " > " + options.listType);
-
-		//check if levels are already specified
-		if(options.levels.length < 1) 
-			setLevels(topLevel, counter, setLevels);
-		
-		options.levels.forEach(function(level, index) {
-			for(var i = 0; i < level.length; i++) {
-				[].forEach.call(level[i].children, function(tab){
-					setClickEvent(tab, container);
-					
-					//add a custom class to all list items that toggle an accordion
-					for(var i = 0; i < tab.children.length; i++) {
-						if(tab.children[i].nodeName == options.listType && !tab.classList.contains(options.listClass))	{	
-							tab.classList.add(options.listClass);			
-						}
-					}
-					
-					for (var i = 0; i < tab.children.length; i++) {
-						if(tab.children[i].nodeName == "A" && tab.classList.contains(options.listClass)) {
-							tab.children[i].removeAttribute('href');
-						}
-					}
-				});
-			}
-		});
-
-		accordionCounter++;
-	});
-
+		topLevel = document.querySelectorAll(options.listContainer + " > " + options.listType),
+		container = document.querySelector(options.listContainer);
 	
 
 
+	//check if levels are already specified
+	if(options.levels.length < 1) 
+		setLevels(topLevel, setLevels);
+	
+	options.levels.forEach(function(level, index) {
+		for(var i = 0; i < level.length; i++) {
+			[].forEach.call(level[i].children, function(tab){
+				setClickEvent(tab);
+				
+				//add a custom class to all list items that toggle an accordion
+				for(var i = 0; i < tab.children.length; i++) {
+					if(tab.children[i].nodeName == options.listType && !tab.classList.contains(options.listClass))	{	
+						tab.classList.add(options.listClass);			
+					}
+				}
+				
+				for (var i = 0; i < tab.children.length; i++) {
+					if(tab.children[i].nodeName == "A" && tab.classList.contains(options.listClass)) {
+						tab.children[i].removeAttribute('href');
+					}
+				}
+			});
+		}
+	});
 
 
-	function setClickEvent(tab, container) {
+	function setClickEvent(tab) {
 		tab.addEventListener('click', function(e) {
 
 			//stopPropogation and cancelBubble stops multiple click events from firing
@@ -80,8 +73,8 @@ var Accordion = (function(options) {
 					tab.classList.toggle(options.listActive);
 					child.classList.toggle(options.listActive);
 
-					activeLists = getParents(tab, options.listType + "." + options.listActive);
-					activeTabs = getParents(tab, options.listToggle + "." + options.listActive);
+					activeLists = getParents(tab, options.listContainer + " " + options.listType + "." + options.listActive);
+					activeTabs = getParents(tab, options.listContainer + " " + options.listToggle + "." + options.listActive);
 
 					activeLists = activeLists.reverse();
 					activeTabs = activeTabs.reverse();
@@ -93,8 +86,8 @@ var Accordion = (function(options) {
 			});
 
 			// console.log(activeLists)
-			var allActiveTabs = container.querySelectorAll(options.listToggle + "." + options.listActive);
-			var allActiveLists = container.querySelectorAll(options.listType + "." + options.listActive);
+			var allActiveTabs = container.querySelectorAll(options.listContainer + " " + options.listToggle + "." + options.listActive);
+			var allActiveLists = container.querySelectorAll(options.listContainer + " " + options.listType + "." + options.listActive);
 
 			if(activeLists.length > 0) {
 				for(var i = 0; i < allActiveTabs.length; i++) {
@@ -144,13 +137,13 @@ var Accordion = (function(options) {
 	}
 	
 
-	function setLevels(elemArr, counter, callback) {
+	function setLevels(elemArr, callback) {
 		var array = [];
 
+		console.log(elemArr);
 		
 		[].forEach.call(elemArr, function(el) {			
 			if(el.nodeName == options.listType) {
-				el.classList.add("acc_" + accordionCounter);
 				el.classList.add("level_" + (counter + 1));
 				array.push(el);
 			}			
@@ -160,19 +153,19 @@ var Accordion = (function(options) {
 		counter++;
 
 		if(elem !== undefined) {
-			var nextLevel = document.querySelectorAll("." + array[0].classList.value + " > " + options.listToggle + " > " + options.listType);
+			var nextLevel = document.querySelectorAll(options.listContainer + " " + "." + array[0].classList.value + " > " + options.listToggle + " > " + options.listType);
 
 			// console.log(array[0].classList.value)
 
 			if(nextLevel.length > 0)
-				callback(nextLevel, counter, callback);
+				callback(nextLevel, callback);
 
 		}
 		options.levels.unshift(array);
 	}
 
 
-	function getParents ( elem, selector ) {
+	var getParents = function ( elem, selector ) {
 
 		// Element.matches() polyfill
 		if (!Element.prototype.matches) {
