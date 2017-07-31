@@ -1,13 +1,14 @@
-.accordion {
-
+.accordion, .accordion-2 {
+	display: block;
 	ul {
 		list-style: none;
 		padding:0;
 		transition: .4s linear height;
-
-		&:not(.active) {
-			height:0!important;
-		}	
+		ul {
+			&:not(.active) {
+				height:0!important;
+			}	
+		}
 	}
 	
 	li {

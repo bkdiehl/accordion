@@ -1,4 +1,4 @@
-var Accordian = (function(options) {
+var Accordion = (function(options) {
 
 	var _defaults = {
 		listContainer: ".accordion",
@@ -20,42 +20,55 @@ var Accordian = (function(options) {
 	options.listToggle = options.listToggle.toUpperCase();
 
 
+	var containers = document.querySelectorAll(options.listContainer),
+		accordionCounter = 0;
+
+	return [].forEach.call(containers, function(container) {
+
 	var counter = 0,
-		topLevel = document.querySelectorAll(options.listContainer + " > " + options.listType),
-		container = document.querySelector(options.listContainer);
-	
+		topLevel = document.querySelectorAll(options.listContainer + " > " + options.listType);
 
-	//check if levels are already specified
-	if(options.levels.length < 1) 
-		setLevels(topLevel, setLevels);
-
-	
-	options.levels.forEach(function(level, index) {
-		for(var i = 0; i < level.length; i++) {
-			[].forEach.call(level[i].children, function(tab){
-				setClickEvent(tab);
-				
-				//add a custom class to all list items that toggle an accordion
-				for(var i = 0; i < tab.children.length; i++) {
-					if(tab.children[i].nodeName == options.listType && !tab.classList.contains(options.listClass))			
-						tab.classList.add(options.listClass);			
-				}
-				
-				for (var i = 0; i < tab.children.length; i++) {
-					if(tab.children[i].nodeName == "A" && tab.classList.contains(options.listClass)) {
-						tab.children[i].removeAttribute('href');
+		//check if levels are already specified
+		if(options.levels.length < 1) 
+			setLevels(topLevel, counter, setLevels);
+		
+		options.levels.forEach(function(level, index) {
+			for(var i = 0; i < level.length; i++) {
+				[].forEach.call(level[i].children, function(tab){
+					setClickEvent(tab, container);
+					
+					//add a custom class to all list items that toggle an accordion
+					for(var i = 0; i < tab.children.length; i++) {
+						if(tab.children[i].nodeName == options.listType && !tab.classList.contains(options.listClass))	{	
+							tab.classList.add(options.listClass);			
+						}
 					}
-				}
-			});
-		}
+					
+					for (var i = 0; i < tab.children.length; i++) {
+						if(tab.children[i].nodeName == "A" && tab.classList.contains(options.listClass)) {
+							tab.children[i].removeAttribute('href');
+						}
+					}
+				});
+			}
+		});
+
+		accordionCounter++;
 	});
 
+	
 
-	function setClickEvent(tab) {
+
+
+
+	function setClickEvent(tab, container) {
 		tab.addEventListener('click', function(e) {
 
-			//cancelBubble stops multiple click events from firing
-			e.cancelBubble = true;
+			//stopPropogation and cancelBubble stops multiple click events from firing
+			if (typeof e.stopPropagation == "function") 
+				e.stopPropagation();
+			else
+				e.cancelBubble = true;
 
 			var activeLists = [],
 				activeTabs = [];
@@ -131,11 +144,13 @@ var Accordian = (function(options) {
 	}
 	
 
-	function setLevels(elemArr, callback) {
+	function setLevels(elemArr, counter, callback) {
 		var array = [];
+
 		
 		[].forEach.call(elemArr, function(el) {			
 			if(el.nodeName == options.listType) {
+				el.classList.add("acc_" + accordionCounter);
 				el.classList.add("level_" + (counter + 1));
 				array.push(el);
 			}			
@@ -145,17 +160,19 @@ var Accordian = (function(options) {
 		counter++;
 
 		if(elem !== undefined) {
-			var nextLevel = document.querySelectorAll("." + array[0].classList + " > " + options.listToggle + " > " + options.listType);
+			var nextLevel = document.querySelectorAll("." + array[0].classList.value + " > " + options.listToggle + " > " + options.listType);
+
+			// console.log(array[0].classList.value)
 
 			if(nextLevel.length > 0)
-				callback(nextLevel, callback);
+				callback(nextLevel, counter, callback);
 
 		}
 		options.levels.unshift(array);
 	}
 
 
-	var getParents = function ( elem, selector ) {
+	function getParents ( elem, selector ) {
 
 		// Element.matches() polyfill
 		if (!Element.prototype.matches) {
