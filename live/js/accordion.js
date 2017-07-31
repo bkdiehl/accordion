@@ -85,7 +85,6 @@ var Accordion = (function(options) {
 				}
 			});
 
-			// console.log(activeLists)
 			var allActiveTabs = container.querySelectorAll(options.listContainer + " " + options.listToggle + "." + options.listActive);
 			var allActiveLists = container.querySelectorAll(options.listContainer + " " + options.listType + "." + options.listActive);
 
@@ -139,8 +138,6 @@ var Accordion = (function(options) {
 
 	function setLevels(elemArr, callback) {
 		var array = [];
-
-		console.log(elemArr);
 		
 		[].forEach.call(elemArr, function(el) {			
 			if(el.nodeName == options.listType) {
@@ -154,8 +151,6 @@ var Accordion = (function(options) {
 
 		if(elem !== undefined) {
 			var nextLevel = document.querySelectorAll(options.listContainer + " " + "." + array[0].classList.value + " > " + options.listToggle + " > " + options.listType);
-
-			// console.log(array[0].classList.value)
 
 			if(nextLevel.length > 0)
 				callback(nextLevel, callback);
