@@ -17,6 +17,10 @@
 		text-align: left;
 		overflow:hidden;
 
+		&:hover {
+			cursor:pointer;
+		}
+
 		a {
 			text-decoration: none;
 			color:#222;
