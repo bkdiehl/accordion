@@ -1,0 +1,27 @@
+.accordion {
+
+	ul {
+		list-style: none;
+		padding:0;
+		transition: .4s linear height;
+
+		&:not(.active) {
+			height:0!important;
+		}	
+	}
+	
+	li {
+		background-color: #eee;
+		color: #444;
+		padding: 0 30px;
+		text-align: left;
+		overflow:hidden;
+
+		a {
+			text-decoration: none;
+			color:#222;
+			display: block;
+			padding:18px;
+		}
+	}
+}
