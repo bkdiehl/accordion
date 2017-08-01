@@ -31,7 +31,7 @@ var Accordion = (function(options) {
 	//check if levels are already specified
 	if(options.levels.length < 1) 
 		setLevels(topLevel, setLevels);
-	
+
 	options.levels.forEach(function(level, index) {
 		for(var i = 0; i < level.length; i++) {
 			[].forEach.call(level[i].children, function(tab){
@@ -56,12 +56,17 @@ var Accordion = (function(options) {
 
 	function setClickEvent(tab) {
 		tab.addEventListener('click', function(e) {
+			e.preventDefault();
+
 
 			//stopPropogation and cancelBubble stops multiple click events from firing
-			if (typeof e.stopPropagation == "function") 
+			if (typeof e.stopPropagation == "function") {
 				e.stopPropagation();
-			else
+			}
+			else {
+				e.returnValue = false;
 				e.cancelBubble = true;
+			}
 
 			var activeLists = [],
 				activeTabs = [];
@@ -120,7 +125,7 @@ var Accordion = (function(options) {
 			var cloned = child.cloneNode(true);			
 			cloned.style.height = "auto";
 			cloned.classList.remove(options.listActive);
-			elem.append(cloned);
+			elem.appendChild(cloned);
 
 			var style = getComputedStyle(cloned),
 				marginTop = parseInt(style.marginTop),
@@ -128,7 +133,7 @@ var Accordion = (function(options) {
 				outerHeight = cloned.offsetHeight;
 
 			//don't forget to remove the clone from the document
-			cloned.remove();
+			cloned.parentElement.removeChild(cloned);
 
 			height += (marginTop + marginBottom + outerHeight);
 		});
@@ -150,7 +155,7 @@ var Accordion = (function(options) {
 		counter++;
 
 		if(elem !== undefined) {
-			var nextLevel = document.querySelectorAll(options.listContainer + " " + "." + array[0].classList.value + " > " + options.listToggle + " > " + options.listType);
+			var nextLevel = document.querySelectorAll(options.listContainer + " " + "." + array[0].classList[0] + " > " + options.listToggle + " > " + options.listType);
 
 			if(nextLevel.length > 0)
 				callback(nextLevel, callback);
