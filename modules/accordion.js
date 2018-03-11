@@ -1,3 +1,9 @@
+/*
+ TO DO
+ 1. ADD EVENT LISTENER 'onTransitionEnd' TO REMOVE AS MANY INLINE STYLES AS POSSIBLE, ESPECIALLY HEIGHT
+ 2. ADD A STYLES OBJECT TO MORE EASILY APPLY/UNDERSTAND THE STYLES THAT ARE BEING ADDED/REMOVED
+*/
+
 export class Accordion {
     constructor(options) {
         this.accordion = document.querySelector(options.accordion);
