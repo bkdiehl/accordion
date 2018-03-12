@@ -4,7 +4,7 @@
  2. ADD A STYLES OBJECT TO MORE EASILY APPLY/UNDERSTAND THE STYLES THAT ARE BEING ADDED/REMOVED
 */
 
-class Accordion {
+export class Accordion {
     constructor(options) {
 		//plugin properties
         this.accordion = document.querySelector(options.accordion);
