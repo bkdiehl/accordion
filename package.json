@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development --open --progress --watch",
-    "build": "webpack --mode production --progress --watch"
+	"start": "parcel index.html",
+	"build": "parcel build index.html"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "babel-preset-es2015-native-modules": "^6.9.4",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.0.6",
+    "parcel-bundler": "^1.6.2",
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.11",
     "webpack-dev-server": "^3.1.1",

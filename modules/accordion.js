@@ -1,15 +1,16 @@
 /*
  TO DO
- 1. ADD EVENT LISTENER 'onTransitionEnd' TO REMOVE AS MANY INLINE STYLES AS POSSIBLE, ESPECIALLY HEIGHT
+ 1. SEE IF YOU NEED TO MOVE THE VIEWPORT IF THE CLICKED ELEMENT MOVES OUT OF VIEWPORT
  2. ADD A STYLES OBJECT TO MORE EASILY APPLY/UNDERSTAND THE STYLES THAT ARE BEING ADDED/REMOVED
 */
 
-export class Accordion {
+class Accordion {
     constructor(options) {
+		//plugin properties
         this.accordion = document.querySelector(options.accordion);
         this.activeClass = options.activeClass || "active";
         this.singleOpen = options.singleOpen != undefined ? options.singleOpen : true;
-        this.transition = options.transition;
+		this.transition = options.transition;
         this.elements = options.selectors.reduce((obj, selector, index) => {
             obj[index] = Array.from(this.accordion.querySelectorAll(selector));
             obj[index].forEach(item => {
@@ -20,62 +21,64 @@ export class Accordion {
 
                 item.addEventListener('click', (e) => {
                     const targetLvl = e.target.dataset.level;
-                    this.elements[targetLvl].forEach(item => item == e.target ? this.toggle(item, targetLvl) : this.close(item));
-                })
-            });
+                    this.elements[targetLvl].forEach(item => item == e.target ? this.toggle(item) : this.close(item));					
+					this.setHeight();
+					this.isInViewport(e.target);
+				})
+			});		
             return obj;
-        }, {});
-    }
-    toggle(elem, targetLvl) {
-        //toggle activeClass
-        elem.classList.toggle(this.activeClass);
-
-        //set height
-        this.setHeight(elem);
-
-        //if target is a sub level of the accordion
-        if (targetLvl > 0) {
-            let current = elem;
-            //while the element we're working with isn't the main accordion element
-            while (current != this.accordion) {
-                current = current.parentNode; //get the parent element
-                Array.from(current.children).forEach(child => { //so that we can check it's children for an accordion trigger
-                    if (!isNaN(child.dataset.level) && child.dataset.level == targetLvl - 1 && child.nextElementSibling.contains(elem)) { //make sure that the element is of a previous target level
-                        this.setHeight(child);
-                        targetLvl--;
-                    }
-                })
-            }
-        }
-    }
+		}, {});
+		this.layerCount = Object.keys(this.elements).length;
+		
+		//resize event to change accordion height when switching to a smaller screen
+		let resizeListener;
+		window.addEventListener('resize', e => {
+			clearTimeout(resizeListener);
+			resizeListener = setTimeout(() => {
+				this.setHeight();
+			}, 100)
+		})
+	}
+	toggle(elem) {
+		if(this.singleOpen) { //if only a single panel is allowed to be open, close all children panels
+			const activeChildren = Array.from(elem.nextElementSibling.querySelectorAll(`.${this.activeClass}`));
+			if(activeChildren.length > 0) {
+				activeChildren.forEach(child => child.classList.remove(this.activeClass));
+			}
+		}
+		elem.classList.toggle(this.activeClass);
+	}
     close(elem) {
-        if (this.singleOpen) {
-            elem.classList.remove(this.activeClass);
-            this.setHeight(elem);
-        }
+        if (this.singleOpen) elem.classList.remove(this.activeClass);   
     }
-    setHeight(elem) {
-        //get array of sibling child elements
-        const sib = elem.nextElementSibling;
-        const children = Array.from(sib.children);
+    setHeight() {
+		for(let i = this.layerCount - 1; i >= 0; i--) { // for each layer of the accordion starting at the inner most layer
+			this.elements[i].forEach(elem => {
+				const sib = elem.nextElementSibling;
 
-        //only change the height from 0 if it's the active accordion element
-        if (elem.classList.contains(this.activeClass)) {
-            //clone the node, append to elem, calc height, remove clone				
-            const clone = sib.cloneNode(true);
-            clone.style.height = 'auto';
-            elem.appendChild(clone);
-            sib.style.height = clone.offsetHeight + "px";
-            clone.remove();
-        } else {
-            sib.style.height = 0;
-        }
-    }
+				//only change the height from 0 if it's the active accordion element
+				if (elem.classList.contains(this.activeClass)) {
+					//clone the node, append to elem, calc height, remove clone				
+					const clone = sib.cloneNode(true);
+					clone.style.height = null;
+					elem.appendChild(clone);
+					sib.style.height = clone.offsetHeight + "px";
+					clone.remove();
+				} else {
+					sib.style.height = 0;
+				}
+			});
+		}      
+	}
+	isInViewport(elem) {
+		const rect = elem.getBoundingClientRect();
+		console.log(rect)
+	}
     setSiblingStyles(elem) {
         //initial styles
         const sib = elem.nextElementSibling;
         sib.style.overflow = 'hidden';
         sib.style.height = 0;
-        sib.style.transition = `${this.transition / 1000}s`;
+		sib.style.transition = `${this.transition / 1000}s`;
     }
 }
