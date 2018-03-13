@@ -1,5 +1,7 @@
 import { Accordion } from './modules/accordion';
 
+// import './scss/index.scss';
+
 const accordion = new Accordion({
     accordion: ".accordion",
     activeClass: "active",
