@@ -11,6 +11,7 @@ export class Accordion {
         this.activeClass = options.activeClass || "active";
         this.singleOpen = options.singleOpen != undefined ? options.singleOpen : true;
 		this.transition = options.transition;
+		this.transitionEnd;
         this.elements = options.selectors.reduce((obj, selector, index) => {
             obj[index] = Array.from(this.accordion.querySelectorAll(selector));
             obj[index].forEach(item => {
@@ -21,9 +22,11 @@ export class Accordion {
 
                 item.addEventListener('click', (e) => {
                     const targetLvl = e.target.dataset.level;
-                    this.elements[targetLvl].forEach(item => item == e.target ? this.toggle(item) : this.close(item));					
+					this.elements[targetLvl].forEach(item => item == e.target ? this.toggle(item) : this.close(item));	
+					console.time('clone')				
 					this.setHeight();
 					this.isInViewport(e.target);
+					console.timeEnd('clone')
 				})
 			});		
             return obj;
@@ -58,7 +61,7 @@ export class Accordion {
 
 				//only change the height from 0 if it's the active accordion element
 				if (elem.classList.contains(this.activeClass)) {
-					//clone the node, append to elem, calc height, remove clone				
+					//clone the node, append to elem, calc height, remove clone			
 					const clone = sib.cloneNode(true);
 					clone.style.height = null;
 					elem.appendChild(clone);
@@ -71,8 +74,14 @@ export class Accordion {
 		}      
 	}
 	isInViewport(elem) {
-		const rect = elem.getBoundingClientRect();
-		console.log(rect)
+		clearTimeout(this.transitionEnd)
+		this.transitionEnd = setTimeout(() => {
+			const rect = elem.getBoundingClientRect();
+			if(rect.top < 0) {
+				elem.scrollIntoView(true)
+			}
+			console.log(rect)
+		}, this.transition)
 	}
     setSiblingStyles(elem) {
         //initial styles
