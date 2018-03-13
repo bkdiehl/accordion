@@ -78,7 +78,7 @@ export class Accordion {
 		this.transitionEnd = setTimeout(() => {
 			const rect = elem.getBoundingClientRect();
 			if(rect.top < 0) {
-				elem.scrollIntoView(true)
+				elem.scrollIntoView(true) //create a module for scroll to element with transition
 			}
 			console.log(rect)
 		}, this.transition)
