@@ -60,7 +60,7 @@
 		// Resolve destination type (node or number)
 		const documentHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
 		const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
-		const destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop;
+		const destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop - offset;
 		const destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
 
 
@@ -82,7 +82,6 @@
 			const now = 'now' in window.performance ? performance.now() : new Date().getTime();
 			const time = Math.min(1, ((now - startTime) / duration));
 			const timeFunction = easings[easing](time);
-			// console.log((timeFunction * (destinationOffsetToScroll - start)) + start, (timeFunction * (destinationOffsetToScroll - start - offset)) + start)
 			window.scroll(0, Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start));
 
 			// Stop requesting animation when window reached its destination

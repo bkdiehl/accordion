@@ -1,7 +1,6 @@
 /*
  TO DO
- 1. SEE IF YOU NEED TO MOVE THE VIEWPORT IF THE CLICKED ELEMENT MOVES OUT OF VIEWPORT
- 2. ADD A STYLES OBJECT TO MORE EASILY APPLY/UNDERSTAND THE STYLES THAT ARE BEING ADDED/REMOVED
+ 1. ADD A STYLES OBJECT TO MORE EASILY APPLY/UNDERSTAND THE STYLES THAT ARE BEING ADDED/REMOVED
 */
 import { scrollIt } from './SmoothScrolling';
 
@@ -80,11 +79,13 @@ export class Accordion {
 		clearTimeout(this.transitionEnd)
 		this.transitionEnd = setTimeout(() => {
 			const rect = elem.getBoundingClientRect();
+			const sibRect = elem.nextElementSibling.getBoundingClientRect();
 
-			if(rect.top < 0)
+			if(rect.top < 0 || rect.height + sibRect.height >= window.innerHeight)
 				scrollIt(elem, this.transitionTime, 'linear', this.scrollToOffset);	
+			else if (rect.height + sibRect.height < window.innerHeight)
+				scrollIt(elem.nextElementSibling, this.transitionTime, 'linear', null);	
 				
-				console.log(elem, this.transitionTime, 'linear', this.scrollToOffset)
 		}, this.transitionTime)
 	}
     setSiblingStyles(elem) {
