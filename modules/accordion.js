@@ -3,6 +3,7 @@
  1. SEE IF YOU NEED TO MOVE THE VIEWPORT IF THE CLICKED ELEMENT MOVES OUT OF VIEWPORT
  2. ADD A STYLES OBJECT TO MORE EASILY APPLY/UNDERSTAND THE STYLES THAT ARE BEING ADDED/REMOVED
 */
+import { scrollIt } from './SmoothScrolling';
 
 export class Accordion {
     constructor(options) {
@@ -10,8 +11,10 @@ export class Accordion {
         this.accordion = document.querySelector(options.accordion);
         this.activeClass = options.activeClass || "active";
         this.singleOpen = options.singleOpen != undefined ? options.singleOpen : true;
-		this.transition = options.transition;
-		this.transitionEnd;
+		this.transitionTime = options.transitionTime || 300;
+		this.transitionType = options.transitionType || 'linear';
+		this.transitionEnd; // class variable for timer
+		this.scrollToOffset = options.scrollToOffset || 0;
         this.elements = options.selectors.reduce((obj, selector, index) => {
             obj[index] = Array.from(this.accordion.querySelectorAll(selector));
             obj[index].forEach(item => {
@@ -77,17 +80,29 @@ export class Accordion {
 		clearTimeout(this.transitionEnd)
 		this.transitionEnd = setTimeout(() => {
 			const rect = elem.getBoundingClientRect();
-			if(rect.top < 0) {
-				elem.scrollIntoView(true) //create a module for scroll to element with transition
-			}
-			console.log(rect)
-		}, this.transition)
+
+			if(rect.top < 0)
+				scrollIt(elem, this.transitionTime, 'linear', this.scrollToOffset);	
+				
+				console.log(elem, this.transitionTime, 'linear', this.scrollToOffset)
+		}, this.transitionTime)
 	}
     setSiblingStyles(elem) {
         //initial styles
         const sib = elem.nextElementSibling;
         sib.style.overflow = 'hidden';
         sib.style.height = 0;
-		sib.style.transition = `${this.transition / 1000}s`;
+		sib.style.transition = `${this.transitionTime / 1000}s ${this.transitionType}`;
     }
 }
+
+var getElemDistance = function ( elem ) {
+    var location = 0;
+    if (elem.offsetParent) {
+        do {
+            location += elem.offsetTop;
+            elem = elem.offsetParent;
+        } while (elem);
+    }
+    return location >= 0 ? location : 0;
+};
