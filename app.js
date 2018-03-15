@@ -1,6 +1,6 @@
+import 'babel-polyfill';
 import { Accordion } from './modules/Accordion';
 
-// import './scss/index.scss';
 
 const accordion = new Accordion({
     accordion: ".accordion",

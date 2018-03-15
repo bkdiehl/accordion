@@ -1,9 +1,17 @@
 {
-    "presets": [
-      ["env", {
-        "targets": {
-          "browsers": ["last 2 versions", "ie >= 11"]
-        }
-      }]
-    ]
-  }
+	"presets": [
+		["env", {
+			"targets": {
+				"browsers": ["last 2 versions", "ie >= 10"],
+				"uglify": false		
+			},
+			"modules": false,
+			"useBuiltIns": true,
+			"debug": true
+		}]
+	],
+	"plugins": [
+		"syntax-dynamic-import",
+		"transform-object-rest-spread"
+	  ]
+}

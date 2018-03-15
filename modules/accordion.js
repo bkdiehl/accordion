@@ -89,7 +89,7 @@ export class Accordion {
 		}, this.transitionTime)
 	}
     setSiblingStyles(elem) {
-        //initial styles
+		//initial styles
         const sib = elem.nextElementSibling;
         sib.style.overflow = 'hidden';
         sib.style.height = 0;
