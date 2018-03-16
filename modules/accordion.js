@@ -68,7 +68,8 @@ export class Accordion {
 					clone.style.height = null;
 					elem.appendChild(clone);
 					sib.style.height = clone.offsetHeight + "px";
-					clone.remove();
+					// clone.remove();
+					clone.parentNode.removeChild(clone);
 				} else {
 					sib.style.height = 0;
 				}
@@ -96,14 +97,3 @@ export class Accordion {
 		sib.style.transition = `${this.transitionTime / 1000}s ${this.transitionType}`;
     }
 }
-
-var getElemDistance = function ( elem ) {
-    var location = 0;
-    if (elem.offsetParent) {
-        do {
-            location += elem.offsetTop;
-            elem = elem.offsetParent;
-        } while (elem);
-    }
-    return location >= 0 ? location : 0;
-};
