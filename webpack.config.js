@@ -9,7 +9,7 @@ const dist = path.join(__dirname, "dist");
 module.exports = {
 	mode: 'development',
 	entry: {
-		filename: ['./app.js', './scss/index.scss']
+		filename: ['./src/app.js', './src/scss/index.scss']
 	},
 	output: {
 		path: dist,
@@ -44,8 +44,8 @@ module.exports = {
 	},
 	plugins: [
 		new HtmlWebPackPlugin({
-			template: "./index.html",
-			filename: "./index.html"
+			template: "./src/index.html",
+			filename: "./src/index.html"
 		}),
 		new ExtractTextPlugin('style.css')
 	]
