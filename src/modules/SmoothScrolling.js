@@ -67,7 +67,6 @@
 		// If requestAnimationFrame is not supported
 		// Move window to destination position and trigger callback function
 		if ('requestAnimationFrame' in window === false) {
-			console.log('working')
 			window.scroll(0, destinationOffsetToScroll);
 			if (callback) {
 			callback();

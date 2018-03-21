@@ -8,6 +8,7 @@ const accordion = new Accordion({
     // singleOpen: false,
     transitionTime: 300,
     transitionType: 'ease-in-out',
-	selectors: [".selector", ".sub-selector", ".sub-selector2"],
-	scrollToOffset: 30
+	// selectors: [".selector", ".sub-selector", ".sub-selector2"],
+	selectors: [".accordion > li > strong", ".accordion > li > ul > li > strong"],
+	scrollToOffset: 150
 });
