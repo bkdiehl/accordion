@@ -9,11 +9,13 @@ const dist = path.join(__dirname, "dist");
 module.exports = {
 	mode: 'development',
 	entry: {
-		filename: ['./src/app.js', './src/scss/index.scss']
+		filename: ['./src/index.js', './src/scss/index.scss']
 	},
 	output: {
 		path: dist,
-		filename: 'app.bundle.js'
+		filename: 'accordion.js',
+		library: 'Accordion',
+		libraryTarget: 'var'
 	},
 	module: {
 		rules: [{

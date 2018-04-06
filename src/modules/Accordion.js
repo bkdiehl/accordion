@@ -123,8 +123,8 @@ export class Accordion {
 				//if the accordion item fits within the viewport
 				//and mobile screen size
 				//scroll the whole accordion item into view
-				else if (rect.height + sibRect.height < window.innerHeight && window.innerWidth < 768)
-					scrollIt(elem.nextElementSibling, this.transitionTime, 'linear', this.scrollToOffset);	
+				// else if (rect.height + sibRect.height < window.innerHeight && window.innerWidth < 768)
+				// 	scrollIt(elem.nextElementSibling, this.transitionTime, 'linear', this.scrollToOffset);	
 					
 			}, this.transitionTime);
 		}
